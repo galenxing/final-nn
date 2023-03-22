@@ -20,7 +20,26 @@ def sample_seqs(seqs: List[str], labels: List[bool]) -> Tuple[List[str], List[bo
         sampled_labels: List[bool]
             List of labels for the sampled sequences
     """
-    pass
+    n_examples_per_class = int(np.mean(np.unique(labels, return_counts=True)[1]))
+
+    samples_data = []
+    samples_label = []
+
+    seqs = np.array(seqs)
+    labels = np.array(labels)
+    for label in np.unique(labels):
+
+        tmp_labels = labels[labels == label]
+        tmp_seqs = seqs[labels == label]
+
+        selected = np.random.choice(len(tmp_labels), n_examples_per_class)
+        samples_data.append(tmp_seqs[selected])
+        samples_label.append(tmp_labels[selected])
+
+    samples_data = np.concatenate(samples_data)
+    samples_label = np.concatenate(samples_label)
+    return samples_data, samples_label
+    
 
 def one_hot_encode_seqs(seq_arr: List[str]) -> ArrayLike:
     """
@@ -41,4 +60,14 @@ def one_hot_encode_seqs(seq_arr: List[str]) -> ArrayLike:
                 G -> [0, 0, 0, 1]
             Then, AGA -> [1, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0].
     """
-    pass
+    for i,s in enumerate(seq_arr):
+        s = s.replace('A', '1000')
+        s = s.replace('T', '0100')
+        s = s.replace('C', '0010')
+        s = s.replace('G', '0001')
+        s = list(s)
+        seq_arr[i] = s
+
+    return seq_arr
+    
+    

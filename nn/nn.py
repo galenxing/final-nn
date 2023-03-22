@@ -190,10 +190,9 @@ class NeuralNetwork:
         else:
             raise ValueError('Activation function needs to be "sigmoid" or "relu"')
     
-#         dz_curr = self._get_loss(dA_curr, Z_curr, is_backprop=True)
     
         import pdb
-#         pdb.set_trace()
+        
         da_prev = np.dot(dz_curr, W_curr)
         dw_curr = np.dot(dz_curr.T, A_prev)
         db_curr = np.sum(dz_curr, axis=0)
@@ -204,7 +203,6 @@ class NeuralNetwork:
     
     def backprop(self, y: ArrayLike, y_hat: ArrayLike, cache: Dict[str, ArrayLike]):
         """
-            this is mine
         This method is responsible for the backprop of the whole fully connected neural network.
 
         Args:
@@ -222,6 +220,7 @@ class NeuralNetwork:
         """
         grads = {}
         import pdb
+        
         da_curr = self._get_loss(y,y_hat, is_backprop=True)        
         for i, arch in enumerate(self.arch[::-1]):
 
@@ -377,7 +376,7 @@ class NeuralNetwork:
 
     def _sigmoid(self,Z):
         # stole this from somewhere on stackoverflow cuz of overflow errors
-        x =Z
+        x = Z
         positive = x >= 0
         # Boolean array inversion is faster than another comparison
         negative = ~positive
@@ -388,7 +387,7 @@ class NeuralNetwork:
         result[negative] = self._negative_sigmoid(x[negative])
 
         return result
-
+   
     def _sigmoid_backprop(self, dA: ArrayLike, Z: ArrayLike):
         """
         Sigmoid derivative for backprop.
@@ -403,6 +402,9 @@ class NeuralNetwork:
             dZ: ArrayLike
                 Partial derivative of current layer Z matrix.
         """
+        import pdb
+
+        dA = dA.reshape((dA.shape[0],-1))
         ds = self._sigmoid(Z) * (1 - self._sigmoid(Z))
         return dA * ds
 
@@ -434,6 +436,7 @@ class NeuralNetwork:
             dZ: ArrayLike
                 Partial derivative of current layer Z matrix.
         """
+        dA = dA.reshape((dA.shape[0],-1))
         return ((Z > 0)+1e-7) * dA
 
     def _binary_cross_entropy(self, y: ArrayLike, y_hat: ArrayLike) -> float:
@@ -451,7 +454,7 @@ class NeuralNetwork:
                 Average loss over mini-batch.
         """
         loss = ((1-y)*np.log(1-y_hat + 1e-4)) + (y * np.log(y_hat + 1e-4))
-        return -np.mean(loss)
+        return np.mean(loss)
 
     def _binary_cross_entropy_backprop(self, y: ArrayLike, y_hat: ArrayLike) -> ArrayLike:
         """
@@ -468,6 +471,7 @@ class NeuralNetwork:
                 partial derivative of loss with respect to A matrix.
         """
         y_hat = np.clip(y_hat, 1e-4, 1-1e-4)
+        y_hat = y_hat.flatten()
         da = ((1-y)/(1-y_hat))- (y/y_hat)
         return da/len(y)
 
