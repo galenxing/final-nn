@@ -1,3 +1,4 @@
+![BuildStatus](https://github.com/galenxing/final-nn/actions/workflows/ci.yml/badge.svg?event=push)
 # Final project: neural network
 
 ## Overview
