@@ -100,10 +100,10 @@ def test_binary_cross_entropy():
                                 seed=0,
                                 batch_size=batch_size,
                                 epochs=10,
-                                loss_function='mse'
+                                loss_function='bce'
                                )
     bce = mynn._binary_cross_entropy(np.array([[0,0]]), np.array([[0,1]])) 
-    assert bce == 4.605120188487924
+    assert bce == -4.605120188487924
 
 
 def test_binary_cross_entropy_backprop():
